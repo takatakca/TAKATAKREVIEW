@@ -104,7 +104,11 @@ test("OAuth uses PKCE, state binds to the starting browser, tokens are encrypted
 test("authenticated encryption detects altered ciphertext", () => {
   const encrypted = seal({ test: "secret" }, env);
   assert.throws(
-    () => unseal(encrypted.slice(0, -2) + "00", env),
+    () =>
+      unseal(
+        encrypted.slice(0, -1) + (encrypted.at(-1) === "0" ? "1" : "0"),
+        env,
+      ),
     /could not be decrypted/,
   );
 });
