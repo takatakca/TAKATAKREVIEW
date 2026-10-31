@@ -85,9 +85,9 @@ No credential-bearing redirect is followed. Provider failure is an error; no gre
 
 ## Email delivery
 
-Set a verified `EMAIL_FROM`, raw `RESEND_API_KEY`, and explicitly enable `ALLOW_DELIVERY=true`. Outbound domain: `api.resend.com`. Workspace owners configure alert recipient and notification rules; customer invitation email requires a valid opted-in address. Requests/alerts are enqueued durably. The worker uses one stable provider idempotency key per delivery and retries at most five times. Interrupted sending rows resume with the same key after restart. Sample deliveries are blocked even with sending enabled.
+Set a verified `EMAIL_FROM`, raw `RESEND_API_KEY`, and explicitly enable `ALLOW_DELIVERY=true`. Outbound domain: `api.resend.com`. Workspace owners configure alert recipient and notification rules; customer invitation email requires a valid opted-in address. Requests/alerts are enqueued durably. The worker uses one stable provider idempotency key per delivery and retries at most five times. Interrupted sending rows resume with the same key after restart. Sample deliveries are blocked even with sending enabled. Queued invitations recheck current contact consent and recipient ownership before sending; deleted/opted-out customers and completed/expired invitations are canceled.
 
-Statuses distinguish `pending`, `retry`, `sending`, `accepted`, and `sample_blocked`. `accepted` means the provider accepted the send; it does **not** prove inbox delivery or reading. The current implementation does not process delivery/bounce webhooks, run scheduled invitation reminders, or offer SMS/WhatsApp sending. Provider idempotency retention limits still apply to delayed retries.
+Statuses distinguish `pending`, `retry`, `sending`, `accepted`, `canceled`, and `sample_blocked`. `accepted` means the provider accepted the send; it does **not** prove inbox delivery or reading. The current implementation does not process delivery/bounce webhooks, run scheduled invitation reminders, or offer SMS/WhatsApp sending. Provider idempotency retention limits still apply to delayed retries.
 
 ## Existing ecosystem reuse and limits
 

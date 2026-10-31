@@ -795,3 +795,68 @@ test("stale source updates cannot erase a confirmed response, and hidden consent
     0,
   );
 });
+
+test("clearing sample data preserves new records and their location, while removing sample invitations and outbox", async (t) => {
+  const { store, request } = await fixture(t);
+  await request("/api/sample", { method: "POST" });
+  const real = (
+    await request("/api/customers", {
+      method: "POST",
+      body: { ...customer, locationId: "west" },
+    })
+  ).data;
+  const page = (await request("/api/bootstrap")).data.pages[0];
+  const sample = store.list("local", "customers", "main").find((c) => c.sample);
+  await request("/api/requests", {
+    method: "POST",
+    body: { customerIds: [sample.id], pageId: page.id, channel: "email" },
+  });
+  assert.equal(store.outbox("local").length, 1);
+  assert.equal(
+    (await request("/api/sample", { method: "DELETE" })).status,
+    200,
+  );
+  assert.equal(store.list("local", "reviews").length, 0);
+  assert.equal(store.list("local", "requests").length, 0);
+  assert.equal(store.outbox("local").length, 0);
+  assert.ok(store.get("local", "locations", "west"));
+  assert.equal(store.get("local", "customers", real.id).name, customer.name);
+});
+
+test("queued invitations recheck consent and recipient ownership immediately before sending", async (t) => {
+  const { store, request } = await fixture(t);
+  const c = (
+    await request("/api/customers", { method: "POST", body: customer })
+  ).data;
+  const page = (await request("/api/bootstrap")).data.pages[0];
+  await request("/api/requests", {
+    method: "POST",
+    body: { customerIds: [c.id], pageId: page.id, channel: "email" },
+  });
+  await request("/api/customers/" + c.id, {
+    method: "PUT",
+    body: { ...customer, consent: false },
+  });
+  let calls = 0;
+  const transport = async () => {
+    calls++;
+    return { id: "must-not-send" };
+  };
+  const env = {
+    ALLOW_DELIVERY: "true",
+    RESEND_API_KEY: "test-only",
+    EMAIL_FROM: "test@example.com",
+  };
+  await processOutbox(store, env, transport);
+  assert.equal(calls, 0);
+  assert.equal(store.outbox("local")[0].status, "canceled");
+  await request("/api/customers/" + c.id, { method: "PUT", body: customer });
+  await request("/api/requests", {
+    method: "POST",
+    body: { customerIds: [c.id], pageId: page.id, channel: "email" },
+  });
+  await request("/api/customers/" + c.id, { method: "DELETE" });
+  await processOutbox(store, env, transport);
+  assert.equal(calls, 0);
+  assert.ok(store.outbox("local").every((r) => r.status === "canceled"));
+});

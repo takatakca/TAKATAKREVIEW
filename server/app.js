@@ -506,9 +506,37 @@ export function createApp({
     if (req.identity.mode !== "local")
       fail(403, "Sample data is only available in local development.");
     store.transaction(() => {
-      for (const kind of ["customers", "reviews", "locations", "notifications"])
-        for (const row of store.list(req.identity.tenant, kind))
-          if (row.sample) store.delete(req.identity.tenant, kind, row.id);
+      const tenant = req.identity.tenant;
+      const sampleCustomers = new Set(
+        store
+          .list(tenant, "customers")
+          .filter((r) => r.sample)
+          .map((r) => r.id),
+      );
+      for (const request of store.list(tenant, "requests"))
+        if (sampleCustomers.has(request.customerId))
+          store.delete(tenant, "requests", request.id);
+      store.db
+        .prepare(
+          "DELETE FROM deliveries WHERE tenant=? AND json_extract(body,'$.sample')=1",
+        )
+        .run(tenant);
+      for (const kind of ["customers", "reviews", "notifications"])
+        for (const row of store.list(tenant, kind))
+          if (row.sample) store.delete(tenant, kind, row.id);
+      for (const location of store.list(tenant, "locations")) {
+        if (!location.sample) continue;
+        const occupied = [
+          "customers",
+          "reviews",
+          "requests",
+          "pages",
+          "widgets",
+          "automations",
+          "messages",
+        ].some((kind) => store.list(tenant, kind, location.id).length);
+        if (!occupied) store.delete(tenant, "locations", location.id);
+      }
     });
     res.json({ ok: true });
   });
@@ -948,6 +976,35 @@ export async function processOutbox(
         )
         .run(new Date().toISOString(), row.id);
       continue;
+    }
+    if (row.kind === "request" && data.requestId) {
+      const invitation = store.get(row.tenant, "requests", data.requestId);
+      const customer = invitation
+        ? store.get(row.tenant, "customers", invitation.customerId)
+        : null;
+      const expired =
+        invitation && new Date(invitation.expiresAt).getTime() < Date.now();
+      if (
+        !invitation ||
+        invitation.status === "completed" ||
+        expired ||
+        !customer?.consent ||
+        customer.email.toLowerCase() !== String(data.to).toLowerCase()
+      ) {
+        store.db
+          .prepare(
+            "UPDATE deliveries SET status='canceled',updated=? WHERE id=?",
+          )
+          .run(new Date().toISOString(), row.id);
+        if (invitation && invitation.status !== "completed")
+          store.put(
+            row.tenant,
+            "requests",
+            { ...invitation, status: expired ? "expired" : "canceled" },
+            invitation.id,
+          );
+        continue;
+      }
     }
     const claimed = store.db
       .prepare(
