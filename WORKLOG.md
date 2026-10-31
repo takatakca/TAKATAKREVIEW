@@ -1,4 +1,6 @@
-2026-10-31 | REVEW | codex/review-cockpit → PR pending | active | BEFORE: align this cockpit with the existing V1 reputation authority; user additionally requested signed QMAPS and FLEXS API handoff notes. No live activation or deployment. | next: scoped implementation, meaningful tests and source handoff — REVEW
+2026-10-31 | REVEW | V1 codex/review-ecosystem + this review-reference branch | DONE / canonical V1 source CI green | AFTER: extended the existing V1 review cockpit rather than introducing another production identity/billing store; CI 41190779123 passed on 8c3cfb8 (real Prisma, tests, typecheck/lint/build), native desktop/mobile/permission smoke passed; signed QMAPS and FLEXS API handoff notes pushed to their actual repositories. | Next: coordinator review and counterpart API implementation; Drive/Gmail/scheduling tools absent, no 30-minute routine active. — REVEW
+
+2026-10-31 | REVEW | codex/review-cockpit → PR pending | done in code; V1 source CI green | BEFORE: align this cockpit with the existing V1 reputation authority; user additionally requested signed QMAPS and FLEXS API handoff notes. No live activation or deployment. | next: scoped implementation, meaningful tests and source handoff — REVEW
 
 # Work log
 

@@ -1,5 +1,7 @@
 # TAKATAK Review
 
+**Canonical ecosystem integration:** REVEW’s enhancement of the existing master review dashboard is on [takatak-v1 · codex/review-ecosystem](https://github.com/takatakca/takatak-v1/tree/codex/review-ecosystem). Its source CI passed on `8c3cfb8`. This repository retains the standalone reference application, screenshots and [signed integration notes](docs/REVEW-CURRENT-MISSION.md); V1 retains production identity, workspace data, AI credits and billing authority.
+
 TAKATAK's review-management cockpit: one workspace for customer feedback, review sources, replies, invitations, widgets, notifications, and reputation analytics. Implements [issue #2](https://github.com/takatakca/TAKATAKREVIEW/issues/2) and supplies the initial application requested by [issue #1](https://github.com/takatakca/TAKATAKREVIEW/issues/1).
 
 ![TAKATAK Review cockpit with fictional sample data](docs/screenshots/overview.png)
