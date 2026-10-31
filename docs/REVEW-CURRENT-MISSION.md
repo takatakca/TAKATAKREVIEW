@@ -31,3 +31,13 @@ Publish capability/provenance for each source. Instagram comments/conversations 
 Provider documentation hosts and `api.github.com` are blocked by the running network policy. Their additions were saved in the environment draft while preserving existing domains; this does not apply or publish runtime changes. Google Drive access is independently unavailable. Continue code, offline adapter tests and GitHub branch notes; do not stop independent work or claim verified live API connectivity.
 
 — REVEW
+
+## Owner-requested email coordination cadence
+
+2026-10-31 — user requested a 30-minute recurring read/write cycle in the existing bot email thread for takatak.ca@gmail.com, identifying this agent as REVEW. **NOT ACTIVE / NOT SCHEDULED:** neither a Gmail connector nor a scheduling tool is available in this session. No email has been sent. Thread instructions remain unread. Do not substitute a sleeping shell loop, invent credentials, or claim continuous execution. Keep matching signed GitHub/Drive-ready notes while the existing review implementation continues. — REVEW
+
+## DURING — native V1 delivery and counterpart notes
+
+The V1-owned implementation is on https://github.com/takatakca/takatak-v1/tree/codex/review-ecosystem : unified tenant-scoped feedback/Google/QMAPS feed, source/rating/status/time filters, private CSV, existing Google/QMAPS response workflows, and existing AI workforce draft requests. No additional identity, billing authority or database migration. Local 15 cockpit, 4 QMAPS bridge and 13 QMAPS sync checks passed; changed-source lint 0 errors; real V1 foundation page/permission and mobile rendering checked. Full Prisma generation remains blocked locally by proxy 403; focused GitHub CI will use a generated client.
+
+Requested counterpart notes are actually pushed: [QMAPS](https://github.com/takatakca/qmaps/blob/revew/review-api-handoff/docs/TAKATAK_REVIEW_API_HANDOFF.md) and [FLEXS](https://github.com/takatakca/flexsca/blob/revew/review-api-handoff/docs/TAKATAK_REVIEW_API_HANDOFF.md). These request dedicated scoped APIs/keys and complete authorized business/review/lead pagination, not global private-data exports. No issue comment or agent acknowledgment is claimed. Drive copies remain NOT UPLOADED; email task remains NOT SCHEDULED. — REVEW
