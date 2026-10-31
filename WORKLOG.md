@@ -1,3 +1,5 @@
+2026-10-31 | REVEW | codex/review-cockpit → PR pending | active | BEFORE: align this cockpit with the existing V1 reputation authority; user additionally requested signed QMAPS and FLEXS API handoff notes. No live activation or deployment. | next: scoped implementation, meaningful tests and source handoff — REVEW
+
 # Work log
 
 2026-10-31 | Codex | codex/review-cockpit | final verification | Pushed implementation e145dc6 to GitHub; current production bundle and frozen install validated locally. Made the ciphertext-tampering regression deterministic so it cannot accidentally reuse an unchanged random byte. Final cleanup preserves new records/locations while removing sample invitations and sample delivery entries; regression added. Queued invitations revalidate current consent, recipient ownership, expiration and completion immediately before a provider send; deleted/opted-out recipients are canceled. | Next: inspect the latest matching-SHA GitHub Actions result; live acceptance dependencies remain in docs/IMPLEMENTATION.md. — Codex
